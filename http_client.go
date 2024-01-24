@@ -4,17 +4,46 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
 )
 
-const apiURL = "http://example.com/api/upload" // Replace with the actual API URL
+const apiURL = "https://api.openai.com/v1/chat/completions" // API URL
 
-// SendImageToAPI takes a base64 encoded image string, sends it to the API,
-// and returns the API response as a string.
-func SendImageToAPI(encodedImage string) (string, error) {
+// getResponse takes a string prompt and a base64 image string and returns the response from the API.
+func SendImageToAPI(prompt, encodedImage string) (string, error) {
+	// Retrieve the OpenAI API key from an environment variable
+	openAIKey := os.Getenv("OPENAI_API_KEY")
+	if openAIKey == "" {
+		return "", errors.New("OPENAI_API_KEY is not set in environment variables")
+	}
+
 	// Prepare the JSON payload
-	payload := map[string]string{"image": encodedImage}
-	jsonPayload, err := json.Marshal(payload)a
+	payload := map[string]interface{}{
+		"model": "gpt-4-vision-preview",
+		"messages": []map[string]interface{}{
+			{
+				"role": "user",
+				"content": []map[string]interface{}{
+					{
+						"type": "text",
+						"text": prompt,
+					},
+					{
+						"type": "image_url",
+						"image_url": map[string]string{
+							"url": fmt.Sprintf("data:image/jpeg;base64,%s", encodedImage),
+						},
+					},
+				},
+			},
+		},
+		"max_tokens":  300,
+		"temperature": 0.9,
+	}
+	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
 		return "", err
 	}
@@ -27,6 +56,7 @@ func SendImageToAPI(encodedImage string) (string, error) {
 
 	// Set the appropriate headers
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+openAIKey)
 
 	// Perform the HTTP request
 	client := &http.Client{}
@@ -47,8 +77,7 @@ func SendImageToAPI(encodedImage string) (string, error) {
 		return "", err
 	}
 
-	// Convert the response body to a string
+	// Convert the response body to a string and return
 	responseString := string(respBody)
-
 	return responseString, nil
 }

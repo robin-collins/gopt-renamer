@@ -44,8 +44,11 @@ func main() {
 	// Base64 encode the image data
 	encodedImage := base64.StdEncoding.EncodeToString(imageData)
 
+	// Prompt to send to the API
+	prompt := "Analyze the content and context of the screenshot and generate an informative and descriptive file name that reflects the key elements or subject matter depicted, Attempt to keep it Main_Title-Main_Topic, for example Google_Chrome_Browser_reddit-cat_information_page. Reply only with the file name, excluding the file extension. Do not offer reasoning or justification for the chosen name."
+
 	// Send the encoded image to the API
-	response, err := SendImageToAPI(encodedImage)
+	response, err := SendImageToAPI(prompt, encodedImage)
 	if err != nil {
 		log.Fatalf("Error sending the image to the API: %s", err)
 	}
