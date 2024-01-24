@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 func main() {
@@ -53,6 +54,28 @@ func main() {
 		log.Fatalf("Error sending the image to the API: %s", err)
 	}
 
-	// Print the API response
-	fmt.Println("API Response:", response)
+	// Ask the user if they want to rename the file
+	dir, file := filepath.Split(*imageFlag)
+	ext := filepath.Ext(file)
+	// baseName := strings.TrimSuffix(file, ext)
+	newFileName := fmt.Sprintf("%s%s", response, ext)
+	newFilePath := filepath.Join(dir, newFileName)
+
+	fmt.Printf("Do you want to rename the file from '%s' to '%s'? (yes/no): ", file, newFileName)
+	var userResponse string
+	_, err = fmt.Scan(&userResponse)
+	if err != nil {
+		log.Fatalf("Error reading user response: %s", err)
+	}
+
+	// If the user responds with 'yes', rename the file
+	if userResponse == "yes" {
+		err := os.Rename(*imageFlag, newFilePath)
+		if err != nil {
+			log.Fatalf("Error renaming the file: %s", err)
+		}
+		fmt.Printf("File renamed to '%s'\n", newFilePath)
+	} else {
+		fmt.Println("File rename operation cancelled.")
+	}
 }

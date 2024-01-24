@@ -77,7 +77,18 @@ func SendImageToAPI(prompt, encodedImage string) (string, error) {
 		return "", err
 	}
 
-	// Convert the response body to a string and return
-	responseString := string(respBody)
-	return responseString, nil
+	// Unmarshal the JSON response
+	var result map[string]interface{}
+	err = json.Unmarshal(respBody, &result)
+	if err != nil {
+		return "", err
+	}
+
+	// Access the desired fields
+	choices := result["choices"].([]interface{})
+	firstChoice := choices[0].(map[string]interface{})
+	message := firstChoice["message"].(map[string]interface{})
+	content := message["content"].(string)
+
+	return content, nil
 }
