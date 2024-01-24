@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-const apiURL = "https://api.openai.com/v1/chat/completions" // API URL
+var apiURL = "https://api.openai.com/v1/chat/completions" // API URL
 
 // getResponse takes a string prompt and a base64 image string and returns the response from the API.
 func SendImageToAPI(prompt, encodedImage string) (string, error) {
