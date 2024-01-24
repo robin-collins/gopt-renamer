@@ -1,0 +1,49 @@
+# Compiled binary
+/bin/
+
+# Executable files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Log files
+*.log
+
+# Output of the go build command
+/main
+
+# Dependency directories (remove the comment below if you check in vendor directory)
+# /vendor/
+
+# Default ignore for Go
+*.o
+*.a
+*.z
+*.test
+*.out
+
+# Ignore the go.mod and go.sum files if you don't want to include dependency info
+# go.mod
+# go.sum
+
+# Ignore local .env files
+.env
+
+# Ignore IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore other files that should not be in the repository
+# such as sensitive data, configuration files, etc.
+# config.json
+# .env.local
+# .env.production
