@@ -31,22 +31,19 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: go build -v -o gopt-renamer-${{ matrix.os }} ./...
 
-      - name: List files in workspace (Linux and MacOS)
-        if: matrix.os != 'windows-latest'
-        run: ls -lha
-    
-      - name: List files in workspace (Windows)
-        if: matrix.os == 'windows-latest'
-        run: dir /s
-        shell: cmd
-
       - name: Build Inno Setup Installer
         if: matrix.os == 'windows-latest'
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
             path: windows/gopt-renamer.iss
             options: /O+
-        
+
+      - name: List files in workspace (Windows)
+        if: matrix.os == 'windows-latest'
+        run: dir /a
+        shell: cmd
+            
+
       - name: Upload Windows Executable and Installer
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v2
