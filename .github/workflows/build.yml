@@ -37,7 +37,7 @@ jobs:
     
       - name: List files in workspace (Windows)
         if: matrix.os == 'windows-latest'
-        run: tree.exe /F /A
+        run: dir /s
         shell: cmd
 
       - name: Build Inno Setup Installer
