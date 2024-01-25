@@ -1,6 +1,9 @@
 // Package main implements a command-line tool for renaming image files.
 // The tool encodes the specified image file in Base64, sends it to an external API for analysis,
 // and renames the file based on the API's response.
+// Author: github-copilot and gpt-4-vision-preview
+// Maintainer: Robin Collins (https://github.com/robin-collins)
+// Created: 2024-01-24
 package main
 
 import (

@@ -6,28 +6,29 @@ import (
 )
 
 // APIResponse represents the structure of the JSON response from the API.
-type APIResponse struct {
-	Success bool   `json:"success"`
-	Message string `json:"message"`
-	Data    struct {
-		ImageURL string `json:"image_url"`
-	} `json:"data"`
-}
+type APIResponse struct { // APIResponse represents the structure of the JSON response from the API.
+	Success bool   `json:"success"` // Indicates whether the API request was successful.
+	Message string `json:"message"` // Contains any error or informational message from the API.
+	Data    struct { // Contains additional data returned by the API.
+		ImageURL string `json:"image_url"` // The URL of the image returned by the API.
+	} `json:"data"` // Contains additional data returned by the API.
+} // End of APIResponse struct
 
-// DecodeAPIResponse takes a JSON string response from the API and decodes it into an APIResponse struct.
-func DecodeAPIResponse(responseString string) (APIResponse, error) {
-	var apiResponse APIResponse
+// DecodeAPIResponse decodes the given JSON string into an APIResponse struct.
+// It returns the decoded APIResponse and an error if decoding fails.
+func DecodeAPIResponse(responseString string) (APIResponse, error) { // DecodeAPIResponse decodes the given JSON string into an APIResponse struct. It returns the decoded APIResponse and an error if decoding fails.
+	var apiResponse APIResponse // APIResponse struct
 
 	// Unmarshal the JSON string into the APIResponse struct
-	err := json.Unmarshal([]byte(responseString), &apiResponse)
-	if err != nil {
-		return APIResponse{}, errors.New("failed to decode API response: " + err.Error())
-	}
+	err := json.Unmarshal([]byte(responseString), &apiResponse) // Unmarshal the JSON string into the APIResponse struct
+	if err != nil { // Check if there was an error
+		return APIResponse{}, errors.New("failed to decode API response: " + err.Error()) // Return the error
+	} // End of if statement
 
 	// Check if the API response indicates success
-	if !apiResponse.Success {
-		return APIResponse{}, errors.New("API responded with an error: " + apiResponse.Message)
-	}
+	if !apiResponse.Success { // Check if the API response indicates success
+		return APIResponse{}, errors.New("API responded with an error: " + apiResponse.Message) // Return the error
+	} // End of if statement
 
-	return apiResponse, nil
+	return apiResponse, nil // Return the decoded APIResponse and no error
 }
