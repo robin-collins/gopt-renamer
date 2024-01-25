@@ -100,6 +100,7 @@ _For more examples, please refer to the [Documentation](https://github.com/robin
 
 * [x] Functional Windows, Ubuntu and Mac builds
 * [x] Ollama (llava and baklavva) tested and not suitable.
+* [ ] CI/CD ready for release
 * [ ] Configurable API endpoint via system environment
 * [ ] Better Error Handling
 * [ ] Windows Installer

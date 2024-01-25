@@ -21,9 +21,25 @@ jobs:
 
       - name: Check out code
         uses: actions/checkout@v2
-
-      - name: Build
+    
+      - name: Build Windows
+        if: matrix.os == 'windows-latest'
+        run: go build -ldflags -H=windowsgui -v -o gopt-renamer-${{ matrix.os }} ./... 
+        
+      - name: Build Linux and MacOS
+        if: matrix.os != 'windows-latest'
         run: go build -v -o gopt-renamer-${{ matrix.os }} ./...
+
+        # Add steps for building the Windows installer
+      - name: Install Inno Setup
+        if: matrix.os == 'windows-latest'
+        # Add command to install Inno Setup
+        run: choco install innosetup
+
+      - name: Build Windows Installer
+        if: matrix.os == 'windows-latest'
+        # Add command to run Inno Setup with gopt-renamer.iss        
+        run: '"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" gopt-renamer.iss'
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
