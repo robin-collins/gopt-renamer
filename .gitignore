@@ -47,3 +47,5 @@ Thumbs.db
 # config.json
 # .env.local
 # .env.production
+
+.history/*

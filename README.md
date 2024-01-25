@@ -99,6 +99,7 @@ _For more examples, please refer to the [Documentation](https://github.com/robin
 ## Roadmap
 
 * [x] Functional Windows, Ubuntu and Mac builds 
+* [ ] Ollama & other endpoint integrations.
 * [ ] Configurable API endpoint via system environment
 * [ ] Better Error Handling
 * [ ] Windows Installer
@@ -109,6 +110,44 @@ _For more examples, please refer to the [Documentation](https://github.com/robin
 See the [open issues](https://github.com/robin-collins/gopt-renamer/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- FILE TREE -->
+## FILE TREE
+
+```txt
+Folder PATH listing for gopt-renamer
+project_root
+|   .gitignore
+|   api_response.go
+|   api_response_test.go
+|   build.cmd
+|   go.mod
+|   gopt-renamer.exe
+|   http_client.go
+|   http_client_test.go
+|   image_processor.go
+|   image_processor_test.go
+|   main.go
+|   makefile
+|   README.md
+|   
++---.github
+|   \---workflows
+|           build.yml
+|           
++---cmd
+|       gopt-renamer-context-menu-registry-additions.cmd
+|       
++---images
+|       logo.png
+|       
++---media
+|       gopt-renamer_running_on_file_explorer.mp4
+|       
+\---windows
+        gopt-renamer.iss
+        
+```
 
 <!-- CONTRIBUTING -->
 ## Contributing

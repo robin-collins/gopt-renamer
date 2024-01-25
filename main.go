@@ -22,42 +22,24 @@ func main() {
 
 	// If help flag is provided, display help information
 	if *helpFlag {
-		if !*silentFlag {
-			fmt.Println("Usage of the program:")
-			fmt.Println("  --image=\"path/to/image\" : Specify the image file path to be encoded and sent to the API")
-			fmt.Println("  --help : Display this help information")
-			fmt.Println("  --force : Force rename without prompt")
-			fmt.Println("  --silent : No output except exit codes") // New help info for silent flag
-		}
+		displayHelpInformation(*silentFlag)
 		return
 	}
 
 	// Check if the image flag is provided
 	if *imageFlag == "" {
-		if !*silentFlag {
-			log.Fatal("Error: Image file path is required. Use --image=\"path/to/image\" to specify the image file.")
-		} else {
-			os.Exit(1)
-		}
+		handleError("Error: Image file path is required. Use --image=\"path/to/image\" to specify the image file.", *silentFlag)
 	}
 
 	// Check if the image file exists
 	if _, err := os.Stat(*imageFlag); os.IsNotExist(err) {
-		if !*silentFlag {
-			log.Fatalf("Error: The file %s does not exist.", *imageFlag)
-		} else {
-			os.Exit(1)
-		}
+		handleError(fmt.Sprintf("Error: The file %s does not exist.", *imageFlag), *silentFlag)
 	}
 
 	// Read the image file
 	imageData, err := ioutil.ReadFile(*imageFlag)
 	if err != nil {
-		if !*silentFlag {
-			log.Fatalf("Error reading the image file: %s", err)
-		} else {
-			os.Exit(1)
-		}
+		handleError(fmt.Sprintf("Error reading the image file: %s", err), *silentFlag)
 	}
 
 	// Base64 encode the image data
@@ -69,70 +51,80 @@ func main() {
 	// Send the encoded image to the API
 	response, err := SendImageToAPI(prompt, encodedImage)
 	if err != nil {
-		// Existing error handling code
-	} else {
-		// Check if the response length is less than 10 characters
-		if len(response) < 10 {
-			if !*silentFlag {
-				fmt.Println("API response is too short for a file name. Exiting.")
-			}
-			os.Exit(0)
-		}
+		handleError("Error sending image to API", *silentFlag)
 	}
 
-	// Ask the user if they want to rename the file
-	dir, file := filepath.Split(*imageFlag)
+	// Check if the response length is less than 10 characters
+	if len(response) < 10 {
+		if !*silentFlag {
+			fmt.Println("API response is too short for a file name. Exiting.")
+		}
+		os.Exit(0)
+	}
+
+	// Rename the file
+	renameFile(*imageFlag, response, *forceFlag, *silentFlag)
+}
+
+func displayHelpInformation(silentFlag bool) {
+	if !silentFlag {
+		fmt.Println("Usage of the program:")
+		fmt.Println("  --image=\"path/to/image\" : Specify the image file path to be encoded and sent to the API")
+		fmt.Println("  --help : Display this help information")
+		fmt.Println("  --force : Force rename without prompt")
+		fmt.Println("  --silent : No output except exit codes") // New help info for silent flag
+	}
+}
+
+func handleError(errorMessage string, silentFlag bool) {
+	if !silentFlag {
+		log.Fatal(errorMessage)
+	} else {
+		os.Exit(1)
+	}
+}
+
+func renameFile(imageFlag, response string, forceFlag, silentFlag bool) {
+	dir, file := filepath.Split(imageFlag)
 	ext := filepath.Ext(file)
 	newFileName := fmt.Sprintf("%s%s", response, ext)
 	newFilePath := filepath.Join(dir, newFileName)
 
-	if *forceFlag || *silentFlag {
+	if forceFlag || silentFlag {
 		// If force flag or silent flag is true, rename the file without prompt
-		err := os.Rename(*imageFlag, newFilePath)
+		err := os.Rename(imageFlag, newFilePath)
 		if err != nil {
-			if !*silentFlag {
-				log.Fatalf("Error renaming the file: %s", err)
-			} else {
-				os.Exit(1)
-			}
+			handleError(fmt.Sprintf("Error renaming the file: %s", err), silentFlag)
 		}
-		if !*silentFlag {
+		if !silentFlag {
 			fmt.Printf("File renamed to '%s'\n", newFilePath)
 		}
 	} else {
 		// Otherwise, prompt the user
 		fmt.Printf("Do you want to rename the file from '%s' to '%s'? (yes/no): ", file, newFileName)
 		var userResponse string
-		_, err = fmt.Scan(&userResponse)
+		_, err := fmt.Scan(&userResponse)
 		if err != nil {
-			if !*silentFlag {
-				log.Fatalf("Error reading user response: %s", err)
-			} else {
-				os.Exit(1)
-			}
+			handleError(fmt.Sprintf("Error reading user response: %s", err), silentFlag)
 		}
 
 		if userResponse == "yes" {
-			err := os.Rename(*imageFlag, newFilePath)
+			err := os.Rename(imageFlag, newFilePath)
 			if err != nil {
-				if !*silentFlag {
-					log.Fatalf("Error renaming the file: %s", err)
-				} else {
-					os.Exit(1)
-				}
+				handleError(fmt.Sprintf("Error renaming the file: %s", err), silentFlag)
 			}
-			if !*silentFlag {
+			if !silentFlag {
 				fmt.Printf("File renamed to '%s'\n", newFilePath)
 			}
 		} else {
-			if !*silentFlag {
+			if !silentFlag {
 				fmt.Println("File rename operation cancelled.")
 			}
 		}
 	}
 
 	// If silent flag is set, suppress all output and exit with code 0 upon success
-	if *silentFlag {
+	if silentFlag {
 		os.Exit(0)
 	}
 }
