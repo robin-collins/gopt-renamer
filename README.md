@@ -98,8 +98,8 @@ _For more examples, please refer to the [Documentation](https://github.com/robin
 <!-- ROADMAP -->
 ## Roadmap
 
-* [x] Functional Windows, Ubuntu and Mac builds 
-* [ ] Ollama & other endpoint integrations.
+* [x] Functional Windows, Ubuntu and Mac builds
+* [x] Ollama (llava and baklavva) tested and not suitable.
 * [ ] Configurable API endpoint via system environment
 * [ ] Better Error Handling
 * [ ] Windows Installer

@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/base64"
-	"io/ioutil"
 	"os"
 )
 
@@ -15,7 +14,7 @@ func ProcessImage(filePath string) (string, error) {
 	}
 
 	// Read the image file
-	imageData, err := ioutil.ReadFile(filePath)
+	imageData, err := os.ReadFile(filePath)
 	if err != nil {
 		return "", err
 	}

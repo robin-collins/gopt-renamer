@@ -1,10 +1,9 @@
 package main
 
 import (
-    "encoding/base64"
-    "io/ioutil"
-    "os"
-    "testing"
+	"encoding/base64"
+	"os"
+	"testing"
 )
 
 func TestProcessImage_NonExistentFile(t *testing.T) {
@@ -16,7 +15,7 @@ func TestProcessImage_NonExistentFile(t *testing.T) {
 
 func TestProcessImage_Success(t *testing.T) {
     // Create a temporary file
-    tmpfile, err := ioutil.TempFile("", "example.*.jpg")
+    tmpfile, err := os.CreateTemp("", "example.*.jpg")
     if err != nil {
         t.Fatal(err)
     }
