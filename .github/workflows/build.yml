@@ -24,7 +24,7 @@ jobs:
     
       - name: Build Windows
         if: matrix.os == 'windows-latest'
-        run:  go build -ldflags -H=windowsgui -v -o gopt-renamer.exe ./... 
+        run:  go build -ldflags -H=windowsgui -v -o windows\gopt-renamer.exe ./... 
           
 
       - name: Build Linux and MacOS
