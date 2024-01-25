@@ -39,13 +39,29 @@ jobs:
       - name: Build Windows Installer
         if: matrix.os == 'windows-latest'
         # Add command to run Inno Setup with gopt-renamer.iss        
-        run: '"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" gopt-renamer.iss'
+        run: '"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows/gopt-renamer.iss'
 
-      - name: Upload Artifact
+      - name: Upload Windows Executable and Installer
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: gopt-renamer-windows
+          path: |
+            gopt-renamer.exe
+            gopt-renamer-installer.exe
+
+      - name: Upload Linux and MacOS Executable
+        if: matrix.os != 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
           name: gopt-renamer-${{ matrix.os }}
           path: gopt-renamer-${{ matrix.os }}
+        
+    #   - name: Upload Artifact
+    #     uses: actions/upload-artifact@v2
+    #     with:
+    #       name: gopt-renamer-${{ matrix.os }}
+    #       path: gopt-renamer-${{ matrix.os }}
 
       - name: Create Release
         id: create_release
