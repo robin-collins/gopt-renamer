@@ -39,7 +39,7 @@ jobs:
       - name: Build Windows Installer
         if: matrix.os == 'windows-latest'
         # Add command to run Inno Setup with gopt-renamer.iss        
-        run: '"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows/gopt-renamer.iss'
+        run: '"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\gopt-renamer.iss'
 
       - name: Upload Windows Executable and Installer
         if: matrix.os == 'windows-latest'
