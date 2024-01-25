@@ -6,7 +6,7 @@ OutputDir=.
 OutputBaseFilename=gopt-renamer-installer
 
 [Files]
-Source: "gopt-renamer.exe"; DestDir: "{app}"
+Source: "D:\a\gopt-renamer\gopt-renamer\gopt-renamer.exe"; DestDir: "{app}"
 
 [Registry]
 Root: HKCR; Subkey: "SystemFileAssociations\image\shell\gopt-renamer"; ValueType: string; ValueName: ""; ValueData: "Rename with gopt-renamer"
