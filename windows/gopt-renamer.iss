@@ -6,7 +6,7 @@ OutputDir=.
 OutputBaseFilename=gopt-renamer-installer
 
 [Files]
-Source: "{#GetEnv('EXE_PATH')}"; DestDir: "{app}"
+Source: ".\gopt-renamer.exe"; DestDir: "{app}"
 
 
 
