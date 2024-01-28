@@ -19,6 +19,8 @@ import (
 // validates inputs, processes the image file, and finally renames it based
 // on the response from an external API.
 func main() {
+	config := NewConfig() // Ensure this is called before any other code
+
 	// Define command line flags
 	imageFlag := flag.String("image", "", "Path to the image file to be processed")
 	helpFlag := flag.Bool("help", false, "Display help information")
@@ -55,6 +57,10 @@ func main() {
 
 	// Define the prompt for the API
 	prompt := "Analyze the content and context of the image. Generate an informative and descriptive file name that reflects the key elements or subject matter depicted in the image, for photographs consider who, what, where, when and why. Attempt to keep it Main_Title-Main_Topic, for example Google_Chrome_Browser_reddit-cat_information_page, alternatively Who_What_Where_When_Why-Title. Reply only with the file name, excluding the file extension. Do not offer reasoning or justification for the chosen name."
+
+	if config.OpenAI_API_Key == "" {
+        log.Fatal("Error: OpenAI API Key not set")
+    }
 
 	// Send the encoded image to the API and obtain a response
 	response, err := SendImageToAPI(prompt, encodedImage)
