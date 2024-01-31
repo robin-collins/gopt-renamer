@@ -26,6 +26,7 @@ Root: HKCR; Subkey: "SystemFileAssociations\image\shell\gopt-renamer\DefaultIcon
 
 
 [Code]
+[Code]
 var
   IntroPage: TWizardPage;
   OpenAIKeyPage: TWizardPage;
@@ -66,6 +67,12 @@ begin
   // OpenAIKeyEdit.PasswordChar := '*'; // Uncomment to mask the input
 end;
 
+function OpenAIKeyValid(Key: string): Boolean;
+begin
+  // Check if the key is not empty and starts with 'sk-'
+  Result := (Length(Key) > 0) and (Copy(Key, 1, 3) = 'sk-');
+end;
+
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
   Result := True;
@@ -74,37 +81,6 @@ begin
     // Additional logic if needed when moving from the IntroPage to the OpenAIKeyPage
   end
   else if CurPageID = OpenAIKeyPage.ID then
-  begin
-    if not OpenAIKeyValid(OpenAIKeyEdit.Text) then
-    begin
-      MsgBox('The OpenAI API Key cannot be empty and must start with ''sk-''.', mbError, MB_OK);
-      Result := False;
-    end;
-  end;
-end;
-
-function OpenAIKeyValid(Key: string): Boolean;
-begin
-  // Check if the key is not empty and starts with 'sk-'
-  Result := (Length(Key) > 0) and (Copy(Key, 1, 3) = 'sk-');
-end;
-
-procedure InitializeWizard();
-begin
-  OpenAIKeyPage := CreateCustomPage(wpWelcome, 'OpenAI API Key', 'Please enter your OpenAI API Key (it should start with ''sk-'')');
-  OpenAIKeyEdit := TEdit.Create(WizardForm);
-  OpenAIKeyEdit.Parent := OpenAIKeyPage.Surface;
-  OpenAIKeyEdit.Top := ScaleY(8);
-  OpenAIKeyEdit.Width := OpenAIKeyPage.SurfaceWidth - ScaleX(16);
-  OpenAIKeyEdit.Height := ScaleY(18);
-  OpenAIKeyEdit.Text := '';
-  // OpenAIKeyEdit.PasswordChar := '*'; // Uncomment to mask the input
-end;
-
-function NextButtonClick(CurPageID: Integer): Boolean;
-begin
-  Result := True;
-  if CurPageID = OpenAIKeyPage.ID then
   begin
     if not OpenAIKeyValid(OpenAIKeyEdit.Text) then
     begin
@@ -135,3 +111,4 @@ begin
     end;
   end;
 end;
+
