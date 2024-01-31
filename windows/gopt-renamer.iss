@@ -21,11 +21,67 @@ Source: "{#GetEnv('GITHUB_WORKSPACE')}\gopt-renamer.exe"; DestDir: "{app}"
 [Registry]
 Root: HKCR; Subkey: "SystemFileAssociations\image\shell\gopt-renamer"; ValueType: string; ValueName: ""; ValueData: "Rename with gopt-renamer"
 Root: HKCR; Subkey: "SystemFileAssociations\image\shell\gopt-renamer\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gopt-renamer.exe"" --image=""%1"" --force"
+; New entry for setting the icon
+Root: HKCR; Subkey: "SystemFileAssociations\image\shell\gopt-renamer\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: """{app}\gopt-renamer.exe"",0"
+
 
 [Code]
 var
+  IntroPage: TWizardPage;
   OpenAIKeyPage: TWizardPage;
   OpenAIKeyEdit: TEdit;
+  IntroLabel: TLabel;
+
+procedure InitializeWizard();
+var
+  IntroText: string;
+begin
+  // Create the introductory page
+  IntroPage := CreateCustomPage(wpWelcome, 'Welcome to gopt-renamer', 'Introduction');
+  
+  // Create and configure the introductory label
+  IntroLabel := TLabel.Create(WizardForm);
+  IntroLabel.Parent := IntroPage.Surface;
+  IntroLabel.Top := ScaleY(8);
+  IntroLabel.Width := IntroPage.SurfaceWidth - ScaleX(16);
+  IntroLabel.Height := ScaleY(60);
+  IntroLabel.AutoSize := False;
+  IntroLabel.WordWrap := True;
+  
+  // Set the introductory text
+  IntroText := 'Welcome to gopt-renamer! This application allows you to use the power of AI to rename your images and screenshots.' + #13#10 +
+               'Please visit our GitHub repository for more information: [link]https://github.com/your-repo[/link]' + #13#10 +
+               'You will need an OpenAI API key to use this application. We will ask for this in the next step and it will be stored locally on your machine.' + #13#10 +
+               'Click Next to continue or Cancel if you do not have an API key.';
+  IntroLabel.Caption := IntroText;
+  
+  // Create the OpenAI API key page
+  OpenAIKeyPage := CreateCustomPage(IntroPage.ID, 'OpenAI API Key', 'Please enter your OpenAI API Key (it should start with ''sk-'')');
+  OpenAIKeyEdit := TEdit.Create(WizardForm);
+  OpenAIKeyEdit.Parent := OpenAIKeyPage.Surface;
+  OpenAIKeyEdit.Top := ScaleY(8);
+  OpenAIKeyEdit.Width := OpenAIKeyPage.SurfaceWidth - ScaleX(16);
+  OpenAIKeyEdit.Height := ScaleY(18);
+  OpenAIKeyEdit.Text := '';
+  // OpenAIKeyEdit.PasswordChar := '*'; // Uncomment to mask the input
+end;
+
+function NextButtonClick(CurPageID: Integer): Boolean;
+begin
+  Result := True;
+  if CurPageID = IntroPage.ID then
+  begin
+    // Additional logic if needed when moving from the IntroPage to the OpenAIKeyPage
+  end
+  else if CurPageID = OpenAIKeyPage.ID then
+  begin
+    if not OpenAIKeyValid(OpenAIKeyEdit.Text) then
+    begin
+      MsgBox('The OpenAI API Key cannot be empty and must start with ''sk-''.', mbError, MB_OK);
+      Result := False;
+    end;
+  end;
+end;
 
 function OpenAIKeyValid(Key: string): Boolean;
 begin

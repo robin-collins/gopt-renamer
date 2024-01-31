@@ -1,9 +1,5 @@
 # gopt-renamer
 
-<!-- PROJECT SHIELDS -->
-[![Go Report Card][go-report-shield]][go-report-url]
-[![License][license-shield]][license-url]
-
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
@@ -59,8 +55,26 @@ gopt-renamer is a tool that leverages the power of GPT-vision API to automatical
 
 * [Golang](https://golang.org/)
 
-<!-- GETTING STARTED -->
-## Getting Started
+## Installation
+
+Download a release package for your platform of choice from the releases. 
+
+### Linux Installation
+
+```sh
+sudo dpkg -i gopt-renamer-ubuntu-latest.deb
+```
+
+### Mac Installation
+
+Click the .pkg file and follow the onscreen prompts
+
+### Windows Installation
+
+Click the .exe file and follow the onscreen prompts
+
+<!-- GETTING STARTED TO BUILD-->
+## Getting Started to build manually
 
 To get a local copy up and running follow these simple steps.
 
@@ -68,7 +82,7 @@ To get a local copy up and running follow these simple steps.
 
 * Golang installed on your machine. You can download it from [here](https://golang.org/dl/).
 
-### Installation
+### Build Installation
 
 1. Clone the repo
 
@@ -79,7 +93,7 @@ git clone https://github.com/robin-collins/gopt-renamer.git
 2. Build the project
 
 ```sh
-go build -o gopt-renamer
+go build 
 ```
 
 <!-- USAGE EXAMPLES -->
@@ -113,63 +127,6 @@ _For more examples, please refer to the [Documentation](https://github.com/robin
 See the [open issues](https://github.com/robin-collins/gopt-renamer/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- FILE TREE -->
-## FILE TREE
-
-```txt
-Folder PATH listing for gopt-renamer
-|   .gitignore
-|   .markdownlint.json
-|   api_response.go
-|   build.cmd
-|   CHANGELOG.md
-|   config.go
-|   go.mod
-|   http_client.go
-|   image_processor.go
-|   LICENSE
-|   main.go
-|   makefile
-|   README.md
-|   rsrc_windows_386.syso
-|   rsrc_windows_amd64.syso
-|   
-+---.github
-|   \---workflows
-|           build.yml
-|           deploy.yml
-|           
-+---cmd
-|       gopt-renamer-context-menu-registry-additions.cmd
-|       
-+---docs
-+---images
-|   |   github-logo.png
-|   |   logo.png
-|   |   logo.svg
-|   |   
-|   +---source_files
-|   |       logo-only.ai
-|   |       
-|   \---test_files
-|           Screenshot 2023-11-28 111710.png
-|           Server_Postfix_Email_Configuration_and_Logs-System_Administration.png
-|           
-+---media
-|       gopt-renamer_running_on_file_explorer.mp4
-|       
-+---website
-+---windows
-|       gopt-renamer.iss
-|       icon.ico
-|       
-\---winres
-        icon.ico
-        README.md
-        winres.json
-        
-```
 
 <!-- CONTRIBUTING -->
 ## Contributing
