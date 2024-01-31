@@ -50,7 +50,7 @@ begin
   
   // Set the introductory text
   IntroText := 'Welcome to gopt-renamer! This application allows you to use the power of AI to rename your images and screenshots.' + #13#10 +
-               'Please visit our GitHub repository for more information: [link]https://github.com/your-repo[/link]' + #13#10 +
+               'Please visit our GitHub repository for more information: [link]https://github.com/robin-collins/gopt-renamer[/link]' + #13#10 +
                'You will need an OpenAI API key to use this application. We will ask for this in the next step and it will be stored locally on your machine.' + #13#10 +
                'Click Next to continue or Cancel if you do not have an API key.';
   IntroLabel.Caption := IntroText;
