@@ -19,8 +19,10 @@ import (
 // validates inputs, processes the image file, and finally renames it based
 // on the response from an external API.
 func main() {
-	config := NewConfig() // Ensure this is called before any other code
-
+	config, err := NewConfig()
+	if err != nil {
+		log.Fatalf("Failed to get OpenAI API Key: %v", err)
+	}
 	// Define command line flags
 	imageFlag := flag.String("image", "", "Path to the image file to be processed")
 	helpFlag := flag.Bool("help", false, "Display help information")

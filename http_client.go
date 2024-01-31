@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -13,7 +14,10 @@ var apiURL = "https://api.openai.com/v1/chat/completions" // API URL
 
 // getResponse takes a string prompt and a base64 image string and returns the response from the API.
 func SendImageToAPI(prompt, encodedImage string) (string, error) {
-	config := NewConfig() // Create a new config
+	config, err := NewConfig()
+	if err != nil {
+		log.Fatalf("Failed to get OpenAI API Key: %v", err)
+	}
 	openAIKey := config.OpenAI_API_Key // Get the API key
 	// Prepare the JSON payload
 	payload := map[string]interface{}{ // Create a map of string to interface
