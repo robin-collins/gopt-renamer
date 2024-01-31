@@ -44,14 +44,16 @@ jobs:
     
       - name: Upload Debian Package
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: gopt-renamer-debian
           path: gopt-renamer-ubuntu-latest.deb
 
       - name: Build Windows
         if: matrix.os == 'windows-latest'
-        run:  go build -ldflags -H=windowsgui -v -o gopt-renamer.exe ./... 
+        run: |
+          go build -v -o gopt-renamer.exe ./...
+          go build -ldflags -H=windowsgui -v -o gopt-renamer-contextmenu.exe ./... 
           
 
       - name: Build Inno Setup Installer
@@ -69,14 +71,14 @@ jobs:
 
       - name: Upload Windows Installer
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: gopt-renamer-windows-installer
           path: gopt-renamer-installer.exe
 
       - name: Upload Windows Executable
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: gopt-renamer-windows
           path: |
@@ -84,7 +86,7 @@ jobs:
 
       - name: Upload Linux and MacOS Executable
         if: matrix.os != 'windows-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: gopt-renamer-${{ matrix.os }}
           path: gopt-renamer-${{ matrix.os }}
