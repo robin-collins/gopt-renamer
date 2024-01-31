@@ -1,6 +1,6 @@
 [Setup]
 AppName=gopt-renamer
-AppVersion=1.0.0
+AppVersion=0.1.0
 DefaultDirName={pf}\gopt-renamer
 OutputDir=..\
 OutputBaseFilename=gopt-renamer-installer
