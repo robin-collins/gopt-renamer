@@ -44,14 +44,20 @@ jobs:
         shell: cmd
             
 
-      - name: Upload Windows Executable and Installer
+      - name: Upload Windows Installer
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: gopt-renamer-windows-installer
+          path: gopt-renamer-installer.exe
+
+      - name: Upload Windows Executable
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
           name: gopt-renamer-windows
           path: |
             gopt-renamer.exe
-            gopt-renamer-installer.exe
 
       - name: Upload Linux and MacOS Executable
         if: matrix.os != 'windows-latest'
@@ -60,11 +66,6 @@ jobs:
           name: gopt-renamer-${{ matrix.os }}
           path: gopt-renamer-${{ matrix.os }}
         
-    #   - name: Upload Artifact
-    #     uses: actions/upload-artifact@v2
-    #     with:
-    #       name: gopt-renamer-${{ matrix.os }}
-    #       path: gopt-renamer-${{ matrix.os }}
 
       - name: Create Release
         id: create_release

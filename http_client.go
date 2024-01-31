@@ -6,20 +6,19 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
-	"os"
 )
 
 var apiURL = "https://api.openai.com/v1/chat/completions" // API URL
 
 // getResponse takes a string prompt and a base64 image string and returns the response from the API.
 func SendImageToAPI(prompt, encodedImage string) (string, error) {
-	// Retrieve the OpenAI API key from an environment variable
-	openAIKey := os.Getenv("OPENAI_API_KEY") // OpenAI API key
-	if openAIKey == "" { 				   // Check if the API key is empty
-		return "", errors.New("OPENAI_API_KEY is not set in environment variables") // Return an error
+	config, err := NewConfig()
+	if err != nil {
+		log.Fatalf("Failed to get OpenAI API Key: %v", err)
 	}
-
+	openAIKey := config.OpenAI_API_Key // Get the API key
 	// Prepare the JSON payload
 	payload := map[string]interface{}{ // Create a map of string to interface
 		"model": "gpt-4-vision-preview", // Set the model
