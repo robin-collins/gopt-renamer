@@ -8,7 +8,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/robin-collins/gopt-renamer">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/github-logo.png" alt="Logo" width="150" height="150">
   </a>
 
   <h3 align="center">gopt-renamer</h3>
@@ -99,11 +99,13 @@ _For more examples, please refer to the [Documentation](https://github.com/robin
 ## Roadmap
 
 * [x] Functional Windows, Ubuntu and Mac builds
-* [x] Ollama (llava and baklavva) tested and not suitable.
+* [x] Ollama (llava and baklavva) tested and found to be not suitable.
+* [x] OpenAI API Key saves to either environment variable OR .conf file
+* [ ] Create Docs and configure deployment
 * [ ] CI/CD ready for release
-* [ ] Configurable API endpoint via system environment
+* [ ] Configurable API endpoint URL via system environment
 * [ ] Better Error Handling
-* [ ] Windows Installer
+* [x] Windows Installer
 * [ ] Mac package
 * [ ] Ubuntu package
 * [ ] Support Ubuntu and Mac context menu / gui integration
@@ -117,36 +119,55 @@ See the [open issues](https://github.com/robin-collins/gopt-renamer/issues) for 
 
 ```txt
 Folder PATH listing for gopt-renamer
-project_root
 |   .gitignore
+|   .markdownlint.json
 |   api_response.go
-|   api_response_test.go
 |   build.cmd
+|   CHANGELOG.md
+|   config.go
 |   go.mod
-|   gopt-renamer.exe
 |   http_client.go
-|   http_client_test.go
 |   image_processor.go
-|   image_processor_test.go
+|   LICENSE
 |   main.go
 |   makefile
 |   README.md
+|   rsrc_windows_386.syso
+|   rsrc_windows_amd64.syso
 |   
 +---.github
 |   \---workflows
 |           build.yml
+|           deploy.yml
 |           
 +---cmd
 |       gopt-renamer-context-menu-registry-additions.cmd
 |       
++---docs
 +---images
-|       logo.png
-|       
+|   |   github-logo.png
+|   |   logo.png
+|   |   logo.svg
+|   |   
+|   +---source_files
+|   |       logo-only.ai
+|   |       
+|   \---test_files
+|           Screenshot 2023-11-28 111710.png
+|           Server_Postfix_Email_Configuration_and_Logs-System_Administration.png
+|           
 +---media
 |       gopt-renamer_running_on_file_explorer.mp4
 |       
-\---windows
-        gopt-renamer.iss
++---website
++---windows
+|       gopt-renamer.iss
+|       icon.ico
+|       
+\---winres
+        icon.ico
+        README.md
+        winres.json
         
 ```
 
