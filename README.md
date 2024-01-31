@@ -151,7 +151,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Robin Collins - [@robin_collins](https://twitter.com/robin_collins) - <robin.collins@email.com>
+Robin Collins - [@robin_collins](https://twitter.com/RobinFCollins) - <robin.f.collins+gopt@Outlook.com>
 
 Project Link: [https://github.com/robin-collins/gopt-renamer](https://github.com/robin-collins/gopt-renamer)
 
