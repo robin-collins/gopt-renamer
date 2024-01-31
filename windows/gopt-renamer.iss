@@ -26,5 +26,8 @@ Root: HKCR; Subkey: "SystemFileAssociations\image\shell\gopt-renamer"; ValueType
 Root: HKCR; Subkey: "SystemFileAssociations\image\shell\gopt-renamer\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gopt-renamer-contextmenu.exe"" --image=""%1"" --force"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "SystemFileAssociations\image\shell\gopt-renamer\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: """{app}\gopt-renamer-contextmenu.exe"",0"; Flags: uninsdeletekey
 
+[InstallDelete]
+Type: files; Name: "{app}\gopt-renamer.conf"
+
 [Code]
 #include "CustomPages.pas"
