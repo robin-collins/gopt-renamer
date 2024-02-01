@@ -3,6 +3,7 @@ var
   OpenAIKeyPage: TWizardPage;
   OpenAIKeyEdit: TEdit;
   IntroRichEditViewer: TRichEditViewer;
+  
 
 procedure InitializeWizard();
 var
@@ -15,12 +16,15 @@ begin
   IntroRichEditViewer := TRichEditViewer.Create(WizardForm);
   IntroRichEditViewer.Parent := IntroPage.Surface;
   IntroRichEditViewer.ReadOnly := True;
+  IntroRichEditViewer.BorderStyle := bsNone; // Remove border
+  IntroRichEditViewer.Color := clBtnFace; // Set the background color to match the wizard
   IntroRichEditViewer.ScrollBars := ssNone;
   IntroRichEditViewer.Top := ScaleY(8);
+  IntroRichEditViewer.Left := ScaleX(8); // Add this to adjust the left position if necessary
   IntroRichEditViewer.Width := IntroPage.SurfaceWidth - ScaleX(16);
-  IntroRichEditViewer.Height := ScaleY(60);
+  IntroRichEditViewer.Height := ScaleY(100); // Adjust the height as needed
   IntroRichEditViewer.TabStop := False;
-
+  
   // Set the introductory rich text with hyperlink
   IntroRTF := '{\rtf1\ansi Welcome to gopt-renamer! This application allows you to use the power of AI to ' +
               'rename your images and screenshots.\par ' +
