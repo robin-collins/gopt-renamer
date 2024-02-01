@@ -104,13 +104,47 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Release Asset
-        if: github.event_name == 'release' && github.event.action == 'published'
+      - name: Upload Ubuntu Release Asset
+        if: matrix.os == 'ubuntu-latest' && github.event_name == 'release' && github.event.action == 'published'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./gopt-renamer-${{ matrix.os }}
-          asset_name: gopt-renamer-${{ matrix.os }}
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./gopt-renamer-ubuntu-latest.deb
+          asset_name: gopt-renamer-ubuntu-latest.deb
           asset_content_type: application/octet-stream
+
+      - name: Upload Windows Installer Release Asset
+        if: matrix.os == 'windows-latest' && github.event_name == 'release' && github.event.action == 'published'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./gopt-renamer-installer.exe
+          asset_name: gopt-renamer-installer.exe
+          asset_content_type: application/octet-stream
+    
+      - name: Upload Windows Executable Release Asset
+        if: matrix.os == 'windows-latest' && github.event_name == 'release' && github.event.action == 'published'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./gopt-renamer.exe
+          asset_name: gopt-renamer.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS Release Asset
+        if: matrix.os == 'macos-latest' && github.event_name == 'release' && github.event.action == 'published'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./gopt-renamer-macos-latest
+          asset_name: gopt-renamer-macos-latest
+          asset_content_type: application/octet-stream
+        
