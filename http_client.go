@@ -13,8 +13,8 @@ import (
 var apiURL = "https://api.openai.com/v1/chat/completions" // API URL
 
 // getResponse takes a string prompt and a base64 image string and returns the response from the API.
-func SendImageToAPI(prompt, encodedImage string) (string, error) {
-	config, err := NewConfig()
+func SendImageToAPI(prompt, encodedImage, confPath string) (string, error) {
+	config, err := NewConfig(confPath)
 	if err != nil {
 		log.Fatalf("Failed to get OpenAI API Key: %v", err)
 	}
@@ -43,24 +43,24 @@ func SendImageToAPI(prompt, encodedImage string) (string, error) {
 		"temperature": 0.9, // Set the temperature
 	} // End of map
 	jsonPayload, err := json.Marshal(payload) // Marshal the JSON payload
-	if err != nil { // Check if there was an error
+	if err != nil {                           // Check if there was an error
 		return "", err // Return the error
 	} // End of if statement
 
 	// Create a new HTTP request
 	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(jsonPayload)) // Create a new HTTP request
-	if err != nil { // Check if there was an error
+	if err != nil {                                                           // Check if there was an error
 		return "", err // Return the error
 	} // End of if statement
 
 	// Set the appropriate headers
-	req.Header.Set("Content-Type", "application/json") // Set the content type
+	req.Header.Set("Content-Type", "application/json")   // Set the content type
 	req.Header.Set("Authorization", "Bearer "+openAIKey) // Set the authorization
 
 	// Perform the HTTP request
-	client := &http.Client{} // Create a new HTTP client
+	client := &http.Client{}    // Create a new HTTP client
 	resp, err := client.Do(req) // Perform the HTTP request
-	if err != nil { // Check if there was an error
+	if err != nil {             // Check if there was an error
 		return "", err // Return the error
 	} // End of if statement
 	defer resp.Body.Close() // Close the response body
@@ -72,22 +72,22 @@ func SendImageToAPI(prompt, encodedImage string) (string, error) {
 
 	// Read the response body
 	respBody, err := io.ReadAll(resp.Body) // Read the response body
-	if err != nil { // Check if there was an error
+	if err != nil {                        // Check if there was an error
 		return "", err // Return the error
 	} // End of if statement
 
 	// Unmarshal the JSON response
-	var result map[string]interface{} // Create a map of string to interface
+	var result map[string]interface{}       // Create a map of string to interface
 	err = json.Unmarshal(respBody, &result) // Unmarshal the JSON response
-	if err != nil { // Check if there was an error
+	if err != nil {                         // Check if there was an error
 		return "", err // Return the error
 	} // End of if statement
 
 	// Access the desired fields
-	choices := result["choices"].([]interface{}) // Get the choices
-	firstChoice := choices[0].(map[string]interface{}) // Get the first choice
+	choices := result["choices"].([]interface{})               // Get the choices
+	firstChoice := choices[0].(map[string]interface{})         // Get the first choice
 	message := firstChoice["message"].(map[string]interface{}) // Get the message
-	content := message["content"].(string) // Get the content
+	content := message["content"].(string)                     // Get the content
 
 	return content, nil // Return the content
 }
