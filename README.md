@@ -11,11 +11,14 @@
 
   <p align="center">
     A Golang command-line application that auto-renames images based on content by sending to a GPT-vision API.
+  </p>
+  <p align="center">
+    <img src="https://raw.githubusercontent.com/robin-collins/gopt-renamer-media/main/media/in_action.gif" alt="Watch as gopt-renamer quickly renames screenshots" >
+  </p>
+  <p align="center">
     <br />
     <a href="https://github.com/robin-collins/gopt-renamer"><strong>Explore the docs »</strong></a>
     <br />
-    <br />
-    <a href="https://github.com/robin-collins/gopt-renamer">View Demo</a>
     ·
     <a href="https://github.com/robin-collins/gopt-renamer/issues">Report Bug</a>
     ·
