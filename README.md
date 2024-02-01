@@ -4,7 +4,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/robin-collins/gopt-renamer">
-    <img src="images/github-logo.png" alt="Logo" width="150" height="150">
+    <img src="images/github_logo.png" alt="Logo" width="150" height="150">
   </a>
 
   <h3 align="center">gopt-renamer</h3>
