@@ -26,12 +26,17 @@ begin
   IntroRichEditViewer.TabStop := False;
   
   // Set the introductory rich text with hyperlink
-  IntroRTF := '{\rtf1\ansi Welcome to gopt-renamer! This application allows you to use the power of AI to ' +
-              'rename your images and screenshots.\par ' +
-              'Please visit our GitHub repository for more information: {\field{\*\fldinst{HYPERLINK "https://github.com/robin-collins/gopt-renamer"}}{\fldrslt{https://github.com/robin-collins/gopt-renamer}}}\par ' +
-              'You will need an OpenAI API key to use this application. We will ask for this in the next step and ' +
-              'it will be stored locally on your machine.\par ' +
-              'Click Next to continue or Cancel if you do not have an API key.}';
+  IntroRTF := '{\rtf1\ansi' + #13#10 +
+              'Welcome to gopt-renamer.\par' + #13#10 +
+              '\par' + // This adds an extra empty line for spacing
+              'This application allows you to use the power of AI to ' +
+              'rename your images and screenshots.\par' + #13#10 +
+              '\par' + // This adds an extra empty line for spacing
+              'You will need an OpenAI API key to use the application, it will be asked for in the next step and stored locally on your machine.\par' + #13#10 +
+              '\par' + // This adds an extra empty line for spacing
+              'Click Next to continue or Cancel if you do not have an API key.\par' +
+              '}';
+
   IntroRichEditViewer.RTFText := IntroRTF;
   
   // Create the OpenAI API key page
