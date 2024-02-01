@@ -21,21 +21,46 @@ jobs:
 
       - name: Check out code
         uses: actions/checkout@v4
-    
-      - name: Build Windows
-        if: matrix.os == 'windows-latest'
-        run:  go build -ldflags -H=windowsgui -v -o gopt-renamer.exe ./... 
-          
 
       - name: Build Linux and MacOS
         if: matrix.os != 'windows-latest'
         run: go build -v -o gopt-renamer-${{ matrix.os }} ./...
+        
+      - name: Build Debian Package
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          mkdir -p debian/usr/bin/
+          cp gopt-renamer-ubuntu-latest debian/usr/bin/gopt-renamer
+          mkdir debian/DEBIAN
+          echo "Package: gopt-renamer" > debian/DEBIAN/control
+          echo "Version: 1.0.0" >> debian/DEBIAN/control
+          echo "Section: base" >> debian/DEBIAN/control
+          echo "Priority: optional" >> debian/DEBIAN/control
+          echo "Architecture: amd64" >> debian/DEBIAN/control
+          echo "Maintainer: Robin Collins" >> debian/DEBIAN/control
+          echo "Description: use the power of AI to rename your images and screenshots." >> debian/DEBIAN/control
+          dpkg-deb --build debian
+          mv debian.deb gopt-renamer-ubuntu-latest.deb
+    
+      - name: Upload Debian Package
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gopt-renamer-debian
+          path: gopt-renamer-ubuntu-latest.deb
+
+      - name: Build Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          go build -v -o gopt-renamer.exe ./...
+          go build -ldflags -H=windowsgui -v -o gopt-renamer-contextmenu.exe ./... 
+          
 
       - name: Build Inno Setup Installer
         if: matrix.os == 'windows-latest'
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
-            path: windows/gopt-renamer.iss
+            path: windows/gopt_renamer.iss
             options: /O+
 
       - name: List files in workspace (Windows)
@@ -46,14 +71,14 @@ jobs:
 
       - name: Upload Windows Installer
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: gopt-renamer-windows-installer
           path: gopt-renamer-installer.exe
 
       - name: Upload Windows Executable
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: gopt-renamer-windows
           path: |
@@ -61,7 +86,7 @@ jobs:
 
       - name: Upload Linux and MacOS Executable
         if: matrix.os != 'windows-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: gopt-renamer-${{ matrix.os }}
           path: gopt-renamer-${{ matrix.os }}

@@ -40,11 +40,11 @@ func setEnvironmentVariable(key string) error {
 	return nil
 }
 
-func NewConfig() (*Config, error) {
+func NewConfig(confPath string) (*Config, error) {
 	key := os.Getenv("OPENAI_API_KEY")
 	if key == "" {
-		if _, err := os.Stat("gopt-renamer.conf"); err == nil {
-			content, err := os.ReadFile("gopt-renamer.conf")
+		if _, err := os.Stat(confPath); err == nil {
+			content, err := os.ReadFile(confPath)
 			if err != nil {
 				return nil, err
 			}
@@ -76,7 +76,7 @@ func NewConfig() (*Config, error) {
 					return nil, err
 				}
 			} else {
-				err := os.WriteFile("gopt-renamer.conf", []byte("OPENAI_API_KEY="+key), 0644)
+				err := os.WriteFile(confPath, []byte("OPENAI_API_KEY="+key), 0644)
 				if err != nil {
 					return nil, err
 				}

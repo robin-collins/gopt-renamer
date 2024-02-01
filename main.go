@@ -19,7 +19,14 @@ import (
 // validates inputs, processes the image file, and finally renames it based
 // on the response from an external API.
 func main() {
-	config, err := NewConfig()
+	exePath, err := os.Executable()
+	if err != nil {
+		log.Fatal(err)
+	}
+	exeDir := filepath.Dir(exePath)
+	confPath := filepath.Join(exeDir, "gopt-renamer.conf")
+
+	config, err := NewConfig(confPath)
 	if err != nil {
 		log.Fatalf("Failed to get OpenAI API Key: %v", err)
 	}
@@ -61,11 +68,11 @@ func main() {
 	prompt := "Analyze the content and context of the image. Generate an informative and descriptive file name that reflects the key elements or subject matter depicted in the image, for photographs consider who, what, where, when and why. Attempt to keep it Main_Title-Main_Topic, for example Google_Chrome_Browser_reddit-cat_information_page, alternatively Who_What_Where_When_Why-Title. Reply only with the file name, excluding the file extension. Do not offer reasoning or justification for the chosen name."
 
 	if config.OpenAI_API_Key == "" {
-        log.Fatal("Error: OpenAI API Key not set")
-    }
+		log.Fatal("Error: OpenAI API Key not set")
+	}
 
 	// Send the encoded image to the API and obtain a response
-	response, err := SendImageToAPI(prompt, encodedImage)
+	response, err := SendImageToAPI(prompt, encodedImage, confPath)
 	if err != nil {
 		handleError("Error sending image to API", *silentFlag)
 	}
@@ -81,6 +88,7 @@ func main() {
 	// Rename the file based on the API's response
 	renameFile(*imageFlag, response, *forceFlag, *silentFlag)
 }
+
 // displayHelpInformation prints the help information for the program.
 // If the silentFlag is set, it suppresses the output.
 func displayHelpInformation(silentFlag bool) {
@@ -92,6 +100,7 @@ func displayHelpInformation(silentFlag bool) {
 		fmt.Println("  --silent : No output except exit codes") // New help info for silent flag
 	}
 }
+
 // handleError logs or prints the specified error message.
 // If the silentFlag is set, it exits with status code 1.
 func handleError(errorMessage string, silentFlag bool) {
@@ -101,6 +110,7 @@ func handleError(errorMessage string, silentFlag bool) {
 		os.Exit(1)
 	}
 }
+
 // renameFile renames the specified image file based on the response.
 // It considers forceFlag and silentFlag for forced renaming and suppressing output, respectively.
 func renameFile(imageFlag, response string, forceFlag, silentFlag bool) {

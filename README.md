@@ -1,25 +1,24 @@
 # gopt-renamer
 
-<!-- PROJECT SHIELDS -->
-[![Go Report Card][go-report-shield]][go-report-url]
-[![License][license-shield]][license-url]
-
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
   <a href="https://github.com/robin-collins/gopt-renamer">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/github_logo.png" alt="Logo" width="150" height="150">
   </a>
 
   <h3 align="center">gopt-renamer</h3>
 
   <p align="center">
     A Golang command-line application that auto-renames images based on content by sending to a GPT-vision API.
+  </p>
+  <p align="center">
+    <img src="https://raw.githubusercontent.com/robin-collins/gopt-renamer-media/main/media/in_action.gif" alt="Watch as gopt-renamer quickly renames screenshots" >
+  </p>
+  <p align="center">
     <br />
     <a href="https://github.com/robin-collins/gopt-renamer"><strong>Explore the docs »</strong></a>
     <br />
-    <br />
-    <a href="https://github.com/robin-collins/gopt-renamer">View Demo</a>
     ·
     <a href="https://github.com/robin-collins/gopt-renamer/issues">Report Bug</a>
     ·
@@ -59,8 +58,26 @@ gopt-renamer is a tool that leverages the power of GPT-vision API to automatical
 
 * [Golang](https://golang.org/)
 
-<!-- GETTING STARTED -->
-## Getting Started
+## Installation
+
+Download a release package for your platform of choice from the releases. 
+
+### Linux Installation
+
+```sh
+sudo dpkg -i gopt-renamer-ubuntu-latest.deb
+```
+
+### Mac Installation
+
+Click the .pkg file and follow the onscreen prompts
+
+### Windows Installation
+
+Click the .exe file and follow the onscreen prompts
+
+<!-- GETTING STARTED TO BUILD-->
+## Getting Started to build manually
 
 To get a local copy up and running follow these simple steps.
 
@@ -68,7 +85,7 @@ To get a local copy up and running follow these simple steps.
 
 * Golang installed on your machine. You can download it from [here](https://golang.org/dl/).
 
-### Installation
+### Build Installation
 
 1. Clone the repo
 
@@ -79,7 +96,7 @@ git clone https://github.com/robin-collins/gopt-renamer.git
 2. Build the project
 
 ```sh
-go build -o gopt-renamer
+go build 
 ```
 
 <!-- USAGE EXAMPLES -->
@@ -99,11 +116,13 @@ _For more examples, please refer to the [Documentation](https://github.com/robin
 ## Roadmap
 
 * [x] Functional Windows, Ubuntu and Mac builds
-* [x] Ollama (llava and baklavva) tested and not suitable.
+* [x] Ollama (llava and baklavva) tested and found to be not suitable.
+* [x] OpenAI API Key saves to either environment variable OR .conf file
+* [ ] Create Docs and configure deployment
 * [ ] CI/CD ready for release
-* [ ] Configurable API endpoint via system environment
+* [ ] Configurable API endpoint URL via system environment
 * [ ] Better Error Handling
-* [ ] Windows Installer
+* [x] Windows Installer
 * [ ] Mac package
 * [ ] Ubuntu package
 * [ ] Support Ubuntu and Mac context menu / gui integration
@@ -111,44 +130,6 @@ _For more examples, please refer to the [Documentation](https://github.com/robin
 See the [open issues](https://github.com/robin-collins/gopt-renamer/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- FILE TREE -->
-## FILE TREE
-
-```txt
-Folder PATH listing for gopt-renamer
-project_root
-|   .gitignore
-|   api_response.go
-|   api_response_test.go
-|   build.cmd
-|   go.mod
-|   gopt-renamer.exe
-|   http_client.go
-|   http_client_test.go
-|   image_processor.go
-|   image_processor_test.go
-|   main.go
-|   makefile
-|   README.md
-|   
-+---.github
-|   \---workflows
-|           build.yml
-|           
-+---cmd
-|       gopt-renamer-context-menu-registry-additions.cmd
-|       
-+---images
-|       logo.png
-|       
-+---media
-|       gopt-renamer_running_on_file_explorer.mp4
-|       
-\---windows
-        gopt-renamer.iss
-        
-```
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -173,7 +154,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Robin Collins - [@robin_collins](https://twitter.com/robin_collins) - <robin.collins@email.com>
+Robin Collins - [@robin_collins](https://twitter.com/RobinFCollins) - <robin.f.collins+gopt@Outlook.com>
 
 Project Link: [https://github.com/robin-collins/gopt-renamer](https://github.com/robin-collins/gopt-renamer)
 
