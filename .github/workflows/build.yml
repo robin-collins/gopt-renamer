@@ -60,7 +60,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
-            path: windows/gopt-renamer.iss
+            path: windows/gopt_renamer.iss
             options: /O+
 
       - name: List files in workspace (Windows)
