@@ -32,6 +32,9 @@ begin
               'This application allows you to use the power of AI to ' +
               'rename your images and screenshots.\par' + #13#10 +
               '\par' + // This adds an extra empty line for spacing
+              'Please visit our GitHub repository for more information: ' +
+              '  {\field{\*\fldinst{HYPERLINK "https://github.com/robin-collins/gopt-renamer"}}{\fldrslt{https://github.com/robin-collins/gopt-renamer}}}\par ' + // This is the hyperlink
+              '\par' + // This adds an extra empty line for spacing
               'You will need an OpenAI API key to use the application, it will be asked for in the next step and stored locally on your machine.\par' + #13#10 +
               '\par' + // This adds an extra empty line for spacing
               'Click Next to continue or Cancel if you do not have an API key.\par' +
