@@ -8,6 +8,9 @@
 *.so
 *.dylib
 
+# OLD files
+*.old
+
 # Log files
 *.log
 
