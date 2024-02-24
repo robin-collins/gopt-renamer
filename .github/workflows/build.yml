@@ -1,4 +1,4 @@
-name: Go Build and Package Workflow
+name: Go Build
 
 on:
   release:
@@ -18,86 +18,133 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
-          
+
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Build Binary
-        run: |
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            go build -v -o gopt-renamer-${{ matrix.os }}.exe ./...
-          else
-            go build -v -o gopt-renamer-${{ matrix.os }} ./...
-          fi
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: gopt-renamer-${{ matrix.os }}
-          path: |
-            gopt-renamer-${{ matrix.os }}*
-
-  package-and-upload:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      # Ubuntu package
-      - name: Download Ubuntu Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: gopt-renamer-ubuntu-latest
-
-      - name: Package Debian
+      - name: Build Linux and MacOS
+        if: matrix.os != 'windows-latest'
+        run: go build -v -o gopt-renamer-${{ matrix.os }} ./...
+        
+      - name: Build Debian Package
+        if: matrix.os == 'ubuntu-latest'
         run: |
           mkdir -p debian/usr/bin/
           cp gopt-renamer-ubuntu-latest debian/usr/bin/gopt-renamer
-          # Add other necessary Debian package metadata and configuration here
+          mkdir debian/DEBIAN
+          echo "Package: gopt-renamer" > debian/DEBIAN/control
+          echo "Version: 1.0.0" >> debian/DEBIAN/control
+          echo "Section: base" >> debian/DEBIAN/control
+          echo "Priority: optional" >> debian/DEBIAN/control
+          echo "Architecture: amd64" >> debian/DEBIAN/control
+          echo "Maintainer: Robin Collins" >> debian/DEBIAN/control
+          echo "Description: use the power of AI to rename your images and screenshots." >> debian/DEBIAN/control
           dpkg-deb --build debian
           mv debian.deb gopt-renamer-ubuntu-latest.deb
-
+    
       - name: Upload Debian Package
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: gopt-renamer-debian-package
+          name: gopt-renamer-debian
           path: gopt-renamer-ubuntu-latest.deb
 
-      # macOS package
-      - name: Download macOS Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: gopt-renamer-macos-latest
-
-      - name: Package for macOS
+      - name: Build Windows
+        if: matrix.os == 'windows-latest'
         run: |
-          mkdir -p "gopt-renamer-macos-latest/gopt-renamer.app/Contents/MacOS"
-          mv gopt-renamer-macos-latest "gopt-renamer-macos-latest/gopt-renamer.app/Contents/MacOS/gopt-renamer"
-          # Add other necessary macOS app bundle configurations here
-          zip -r gopt-renamer-macos-latest.zip "gopt-renamer-macos-latest"
+          go build -v -o gopt-renamer.exe ./...
+          go build -ldflags -H=windowsgui -v -o gopt-renamer-contextmenu.exe ./... 
+          
 
-      - name: Upload macOS Package
+      - name: Build Inno Setup Installer
+        if: matrix.os == 'windows-latest'
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+            path: windows/gopt_renamer.iss
+            options: /O+
+
+      - name: List files in workspace (Windows)
+        if: matrix.os == 'windows-latest'
+        run: dir /a
+        shell: cmd
+            
+
+      - name: Upload Windows Installer
+        if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: gopt-renamer-macos-package
-          path: gopt-renamer-macos-latest.zip
+          name: gopt-renamer-windows-installer
+          path: gopt-renamer-installer.exe
 
-      # Windows package
-      - name: Download Windows Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: gopt-renamer-windows-latest
-
-      - name: Package for Windows
-        run: |
-          # Assuming a simple ZIP for Windows; adjust as needed for your actual packaging requirements
-          zip -r gopt-renamer-windows-latest.zip gopt-renamer-windows-latest.exe
-
-      - name: Upload Windows Package
+      - name: Upload Windows Executable
+        if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: gopt-renamer-windows-package
-          path: gopt-renamer-windows-latest.zip
+          name: gopt-renamer-windows
+          path: |
+            gopt-renamer.exe
 
-      # Additional steps for release creation and asset upload can be added here
+      - name: Upload Linux and MacOS Executable
+        if: matrix.os != 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gopt-renamer-${{ matrix.os }}
+          path: gopt-renamer-${{ matrix.os }}
+        
+
+      - name: Create Release
+        id: create_release
+        if: github.event_name == 'release' && github.event.action == 'published'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Ubuntu Release Asset
+        if: matrix.os == 'ubuntu-latest' && github.event_name == 'release' && github.event.action == 'published'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./gopt-renamer-ubuntu-latest.deb
+          asset_name: gopt-renamer-ubuntu-latest.deb
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows Installer Release Asset
+        if: matrix.os == 'windows-latest' && github.event_name == 'release' && github.event.action == 'published'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./gopt-renamer-installer.exe
+          asset_name: gopt-renamer-installer.exe
+          asset_content_type: application/octet-stream
+    
+      - name: Upload Windows Executable Release Asset
+        if: matrix.os == 'windows-latest' && github.event_name == 'release' && github.event.action == 'published'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./gopt-renamer.exe
+          asset_name: gopt-renamer.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS Release Asset
+        if: matrix.os == 'macos-latest' && github.event_name == 'release' && github.event.action == 'published'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./gopt-renamer-macos-latest
+          asset_name: gopt-renamer-macos-latest
+          asset_content_type: application/octet-stream
+        
