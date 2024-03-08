@@ -18,79 +18,72 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
-
       - name: Check out code
         uses: actions/checkout@v4
-
       - name: Build
-        run: go build -v -o gopt-renamer-${{ matrix.os }} ./...  # Build for all OS
-
-      - name: Upload Artifact # Upload for all OS
+        run: go build -v -o gopt-renamer-${{ matrix.os }} ./...
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: gopt-renamer-${{ matrix.os }}
-          path: gopt-renamer-${{ matrix.os }} 
+          path: gopt-renamer-${{ matrix.os }}
 
-  package: 
+  package:
     name: Create Packages
-    needs: build  
+    needs: build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest] 
+        os: [ubuntu-latest, windows-latest]
     steps:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
           name: gopt-renamer-${{ matrix.os }}
-
       - name: Build Debian Package
         if: matrix.os == 'ubuntu-latest'
         run: |
-          # ... (Debian packaging code remains the same)
-
+          # ... (Debian packaging code)
+          mv gopt-renamer-ubuntu-latest gopt-renamer
+          dpkg-deb --build debian gopt-renamer-debian.deb
       - name: Build Inno Setup Installer
         if: matrix.os == 'windows-latest'
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
-          path: windows/gopt_renamer.iss 
+          path: windows/gopt_renamer.iss
           options: /O+
-
-  upload:
-    name: Upload Artifacts
-    needs: [build, package] 
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Artifacts (All OS)
-        uses: actions/download-artifact@v4
-        with: 
-          name: gopt-renamer-${{ matrix.os }}
-          path: artifacts 
-
       - name: Upload Debian Package
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           name: gopt-renamer-debian
-          path: artifacts/gopt-renamer-ubuntu-latest.deb
-
+          path: gopt-renamer-debian.deb
       - name: Upload Windows Installer
+        if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
           name: gopt-renamer-windows-installer
-          path: artifacts/gopt-renamer-installer.exe
+          path: Output/gopt_renamer_setup.exe
 
-      - name: Upload Windows Executable
-        uses: actions/upload-artifact@v4
+  upload:
+    name: Upload Artifacts
+    needs: [build, package]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: gopt-renamer-windows
-          path: artifacts/gopt-renamer.exe
+          path: artifacts
 
-      - name: Upload Linux and MacOS Executable
-        uses: actions/upload-artifact@v4
+  release:
+    name: Create Release
+    needs: upload
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: gopt-renamer-${{ matrix.os }}
-          path: artifacts/gopt-renamer-${{ matrix.os }} 
-
+          path: artifacts
       - name: Create Release
         id: create_release
         if: github.event_name == 'release' && github.event.action == 'published'
@@ -102,47 +95,16 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-
-      - name: Upload Ubuntu Release Asset
-        if: matrix.os == 'ubuntu-latest' && github.event_name == 'release' && github.event.action == 'published'
+      - name: Upload Release Assets
+        if: github.event_name == 'release' && github.event.action == 'published'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./gopt-renamer-ubuntu-latest.deb
-          asset_name: gopt-renamer-ubuntu-latest.deb
-          asset_content_type: application/octet-stream
-
-      - name: Upload Windows Installer Release Asset
-        if: matrix.os == 'windows-latest' && github.event_name == 'release' && github.event.action == 'published'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./gopt-renamer-installer.exe
-          asset_name: gopt-renamer-installer.exe
-          asset_content_type: application/octet-stream
-    
-      - name: Upload Windows Executable Release Asset
-        if: matrix.os == 'windows-latest' && github.event_name == 'release' && github.event.action == 'published'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./gopt-renamer.exe
-          asset_name: gopt-renamer.exe
-          asset_content_type: application/octet-stream
-
-      - name: Upload macOS Release Asset
-        if: matrix.os == 'macos-latest' && github.event_name == 'release' && github.event.action == 'published'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./gopt-renamer-macos-latest
-          asset_name: gopt-renamer-macos-latest
-          asset_content_type: application/octet-stream
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          assets: |
+            artifacts/gopt-renamer-ubuntu-latest/gopt-renamer-ubuntu-latest
+            artifacts/gopt-renamer-macos-latest/gopt-renamer-macos-latest
+            artifacts/gopt-renamer-windows-latest/gopt-renamer-windows-latest.exe
+            artifacts/gopt-renamer-debian/gopt-renamer-debian.deb
+            artifacts/gopt-renamer-windows-installer/gopt_renamer_setup.exe
