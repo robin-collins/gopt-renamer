@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build Executables
+    name: Build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -20,44 +20,55 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Build
+      - name: Build Linux and MacOS
+        if: matrix.os != 'windows-latest'
         run: go build -v -o gopt-renamer-${{ matrix.os }} ./...
-      - name: Upload Artifact
+      - name: Build Debian Package
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          mkdir -p debian/usr/bin/
+          cp gopt-renamer-ubuntu-latest debian/usr/bin/gopt-renamer
+          mkdir debian/DEBIAN
+          echo "Package: gopt-renamer" > debian/DEBIAN/control
+          echo "Version: 1.0.0" >> debian/DEBIAN/control
+          echo "Section: base" >> debian/DEBIAN/control
+          echo "Priority: optional" >> debian/DEBIAN/control
+          echo "Architecture: amd64" >> debian/DEBIAN/control
+          echo "Maintainer: Robin Collins" >> debian/DEBIAN/control
+          echo "Description: use the power of AI to rename your images and screenshots." >> debian/DEBIAN/control
+          dpkg-deb --build debian
+          mv debian.deb gopt-renamer-ubuntu-latest.deb
+      - name: Upload Linux and MacOS Artifacts
+        if: matrix.os != 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
           name: gopt-renamer-${{ matrix.os }}
           path: gopt-renamer-${{ matrix.os }}
-
-  package:
-    name: Create Packages
-    needs: build
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: gopt-renamer-${{ matrix.os }}
-      - name: Build Debian Package
+      - name: Upload Debian Package
         if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gopt-renamer-debian
+          path: gopt-renamer-ubuntu-latest.deb
+      - name: Build Windows
+        if: matrix.os == 'windows-latest'
         run: |
-          # ... (Debian packaging code)
-          # mv gopt-renamer-ubuntu-latest gopt-renamer
-          # dpkg-deb --build debian gopt-renamer-debian.deb
+          go build -v -o gopt-renamer.exe ./...
+          go build -ldflags -H=windowsgui -v -o gopt-renamer-contextmenu.exe ./...
       - name: Build Inno Setup Installer
         if: matrix.os == 'windows-latest'
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: windows/gopt_renamer.iss
           options: /O+
-      - name: Upload Debian Package
-        if: matrix.os == 'ubuntu-latest'
+      - name: Upload Windows Artifacts
+        if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: gopt-renamer-debian
-          path: gopt-renamer-debian.deb
+          name: gopt-renamer-windows
+          path: |
+            gopt-renamer.exe
+            gopt-renamer-contextmenu.exe
       - name: Upload Windows Installer
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
@@ -65,19 +76,9 @@ jobs:
           name: gopt-renamer-windows-installer
           path: Output/gopt_renamer_setup.exe
 
-  upload:
-    name: Upload Artifacts
-    needs: [build, package]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
   release:
     name: Create Release
-    needs: upload
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifacts
@@ -105,6 +106,7 @@ jobs:
           assets: |
             artifacts/gopt-renamer-ubuntu-latest/gopt-renamer-ubuntu-latest
             artifacts/gopt-renamer-macos-latest/gopt-renamer-macos-latest
-            artifacts/gopt-renamer-windows-latest/gopt-renamer-windows-latest.exe
-            artifacts/gopt-renamer-debian/gopt-renamer-debian.deb
+            artifacts/gopt-renamer-windows/gopt-renamer.exe
+            artifacts/gopt-renamer-windows/gopt-renamer-contextmenu.exe
+            artifacts/gopt-renamer-debian/gopt-renamer-ubuntu-latest.deb
             artifacts/gopt-renamer-windows-installer/gopt_renamer_setup.exe
